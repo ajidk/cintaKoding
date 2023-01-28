@@ -1,0 +1,3 @@
+.inputLogin {
+    @apply text-gray-400 text-center border rounded-xl bg-transparent border-blue-500 py-2 w-full
+}
