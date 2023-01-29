@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 interface SpotState {
   name: any;
   body: string;
-  totalComment?: string;
+  totalComment?: any;
   comment?: any;
   onPressDetail?: () => void;
 }

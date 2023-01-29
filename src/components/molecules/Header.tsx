@@ -11,7 +11,7 @@ interface HeaderParams {
 const Header: React.FC<HeaderParams> = ({ onPress, status, name }) => {
   const navigate = useNavigate();
   return (
-    <div className="h-[10vh] drop-shadow z-20 grid grid-cols-3 justify-between items-center px-4 mx-auto w-full sticky top-0 bg-white">
+    <div className="h-[10vh] z-20 grid grid-cols-3 justify-between items-center px-4 mx-auto w-full sticky top-0 bg-white">
       <div className="font-bold text-2xl">Cinta Koding</div>
       {status && (
         <div className="text-gray-400 mt-2 text-center ">
