@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import ReactPaginate from "react-paginate";
 import { useEffect, useState } from "react";
 import { Header, SpotLight } from "../../components";
@@ -5,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 
 const Post = () => {
   const [items, setItem] = useState<any>([]);
-  // const [Random, setRandom] = useState<any>([]);
   const navigate = useNavigate();
   const [pageCount, setpageCount] = useState(0);
   let limit = 10;
@@ -26,47 +26,51 @@ const Post = () => {
     getComments();
   }, [limit]);
 
-  // useEffect(() => {
-  //   var post: any;
+  function getResults() {
+    const checkResult = (res: any) =>
+      res.ok ? res.json() : Promise.resolve({});
+    const joinMap = (
+      { title, body: lbody }: any,
+      { name, body: rbody }: any
+    ) => ({
+      title,
+      lbody,
+      rbody,
+      name,
+    });
 
-  //   fetch("https://jsonplaceholder.typicode.com/posts")
-  //     .then((response) => {
-  //       if (response.ok) {
-  //         return response.json();
-  //       } else {
-  //         return Promise.reject(response);
-  //       }
-  //     })
-  //     .then((data) => {
-  //       post = data;
-  //       // console.log(data);
+    const equiJoin = (
+      xs: any,
+      ys: any,
+      primary: any,
+      foreign: any,
+      sel: any
+    ) => {
+      const ix = xs.reduce(
+        (ix: any, row: any) => ix.set(row[primary], row),
+        new Map()
+      );
+      return ys.map((row: any) => sel(ix.get(row[foreign]), row));
+    };
+    const posts = fetch("https://jsonplaceholder.typicode.com/posts").then(
+      checkResult
+    );
 
-  //       return post.map((item: any) => {
-  //         return fetch(
-  //           "https://jsonplaceholder.typicode.com/users/" + item.userId
-  //         );
-  //       });
-  //     })
-  //     .then((response) => {
-  //       return console.log('data',response);
-        
-  //       // if (response.ok) {
-  //       //   return response.json();
-  //       // } else {
-  //       //   return Promise.reject(response);
-  //       // }
-  //     })
-  //     .then((userData) => {
-  //       // console.log(userData);
+    const comments = fetch(
+      "https://jsonplaceholder.typicode.com/comments"
+    ).then(checkResult);
 
-  //       // console.log("post", post, "user", userData);
-  //       // console.log({ ...post, ...userData });
-  //       // setRandom({ ...post, ...userData });
-  //     })
-  //     .catch((error) => {
-  //       console.warn(error);
-  //     });
-  // }, []);
+    return Promise.all([posts, comments])
+      .then(([postData, commentData]) => {
+        const result = equiJoin(postData, commentData, "id", "postId", joinMap);
+        console.log("masuk", result);
+      })
+      .catch((err) => console.error(err));
+  }
+
+  useEffect(() => {
+    getResults();
+  }, [getResults]);
 
   const paginationPost = async (currentPage: any) => {
     const res = await fetch(
@@ -82,8 +86,6 @@ const Post = () => {
     const commentsFormServer = await paginationPost(currentPage);
     setItem(commentsFormServer);
   };
-
-  // console.log(Random);
 
   return (
     <div className="flex flex-1 flex-col mx-auto max-w-7xl w-full ">
